@@ -12,6 +12,12 @@ class MyReceiver : BroadcastReceiver() {
             Intent.ACTION_BATTERY_LOW -> {
                 Toast.makeText(context, "Low battery", Toast.LENGTH_SHORT).show()
             }
+
+            Intent.ACTION_AIRPLANE_MODE_CHANGED -> {
+                val turnedOn = intent.getBooleanExtra("state", false)
+                Toast.makeText(context, "Airplane mode turnedOn: $turnedOn ", Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
     }
 }
