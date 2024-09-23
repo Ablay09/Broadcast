@@ -29,5 +29,6 @@ class MyReceiver : BroadcastReceiver() {
     companion object {
         const val ACTION_CLICKED = "clicked"
         const val EXTRA_COUNT = "count"
+
     }
 }
