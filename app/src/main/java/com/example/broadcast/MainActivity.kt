@@ -12,11 +12,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.broadcast.MyReceiver.Companion.EXTRA_COUNT
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var progressBar: ProgressBar
+    private val localBroadcastManager by lazy {
+        LocalBroadcastManager.getInstance(this)
+    }
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -37,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(MyReceiver.ACTION_CLICKED).apply {
                 putExtra(EXTRA_COUNT, ++counter)
             }
-            sendBroadcast(intent)
+            localBroadcastManager.sendBroadcast(intent)
         }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -47,18 +51,13 @@ class MainActivity : AppCompatActivity() {
         val intentFilter = IntentFilter().apply {
             addAction(ACTION_LOADED)
         }
-        ContextCompat.registerReceiver(
-            this,
-            receiver,
-            intentFilter,
-            ContextCompat.RECEIVER_EXPORTED
-        )
+        localBroadcastManager.registerReceiver(receiver, intentFilter)
         startService(MyService.newIntent(this))
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(receiver)
+        localBroadcastManager.unregisterReceiver(receiver)
     }
 
     companion object {
